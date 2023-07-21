@@ -10,9 +10,7 @@ Their AI can be customized from OpenAI's GPT4 to custom models using Dalai.
 
 [Mobula](https://github.com/Chelsea486MHz/mobula) is a Python Flask wrapper for [Dalai](https://github.com/cocktailpeanut/dalai) that allows running it as a web service and provides token-based authentication.
 
-# Usage
-
-You can use Docker Compose to orchestrate multiple bots for your server and easily deploy them:
+You can now use Docker Compose to orchestrate multiple bots for your server and easily deploy them:
 
 `$ cat ./docker-compose.yml`
 
