@@ -3,7 +3,7 @@ const axios = require('axios');
 const Discord = require('discord.js');
 
 // Discord client configuration
-const client = new Discord.Client({ intents: 131071 });
+const client = new Discord.Client({ intents: 67584 });
 client.login(process.env.DISCORD_TOKEN);
 
 // Message history
