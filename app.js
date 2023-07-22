@@ -2,6 +2,12 @@ require('dotenv').config();
 const axios = require('axios');
 const Discord = require('discord.js');
 
+console.log('Starting dAIscord with the following settings:')
+console.log(`Discord token: ${process.env.DISCORD_TOKEN}`);
+console.log(`AI token: ${process.env.AI_TOKEN}`);
+console.log(`AI URI: ${process.env.AI_URI}`);
+console.log(`PREPROMPT: ${process.env.PREPROMPT}`);
+
 // Discord client configuration
 const client = new Discord.Client({ intents: 67584 });
 
@@ -23,7 +29,7 @@ async function getAiCompletion(prompt) {
 				'Authorization': process.env.AI_TOKEN,
 				'Content-Type': 'application/x-www-form-urlencoded'
 			},
-		responseType: 'arraybuffer'
+		responseType: 'blob'
 		});
 
 		// Return the completion
@@ -36,10 +42,6 @@ async function getAiCompletion(prompt) {
         throw error;
     }
 }
-
-// Pre-prompt
-var preprompt = process.env.PREPROMPT;
-getAiCompletion(preprompt);
 
 // Set up Discord bot events
 client.on('ready', () => {
@@ -79,5 +81,9 @@ client.on("messageCreate", async message => {
 		message.channel.send(response);
 	}
 });
+
+// Pre-prompt
+var preprompt = process.env.PREPROMPT;
+getAiCompletion(preprompt);
 
 client.login(process.env.DISCORD_TOKEN);
