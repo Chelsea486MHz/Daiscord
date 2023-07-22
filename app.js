@@ -4,7 +4,6 @@ const Discord = require('discord.js');
 
 // Discord client configuration
 const client = new Discord.Client({ intents: 67584 });
-client.login(process.env.DISCORD_TOKEN);
 
 // Message history
 let messageHistory = '';
@@ -80,3 +79,5 @@ client.on("messageCreate", async message => {
 		message.channel.send(response);
 	}
 });
+
+client.login(process.env.DISCORD_TOKEN);
