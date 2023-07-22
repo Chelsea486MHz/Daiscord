@@ -18,7 +18,7 @@ async function getAiCompletion(prompt) {
 	// Send the prompt, wait for completion
     try {
         const response = await axios.post(process.env.AI_URI, {
-			text: prompt
+			prompt: prompt
 		}, {
 			headers: {
 				'Authorization': process.env.AI_TOKEN,
