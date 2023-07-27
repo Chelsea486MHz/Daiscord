@@ -2,13 +2,9 @@
 
 # Interact with your Discord users with custom AI endpoints
 
-dAIscord allows you to add custom AI bots to your server.
+dAIscord allows you to add custom AI bots to your server. An OpenAI API key is required.
 
-Their AI can be customized from OpenAI's GPT4 to custom models using Dalai.
-
-# Usage with Mobula
-
-[Mobula](https://github.com/Chelsea486MHz/mobula) is a Python Flask wrapper for [Dalai](https://github.com/cocktailpeanut/dalai) that allows running it as a web service and provides token-based authentication.
+# Usage with Docker Compose
 
 You can now use Docker Compose to orchestrate multiple bots for your server and easily deploy them:
 
@@ -19,14 +15,21 @@ version: '3'
 
 services:
   macron:
-    build:
-      context: .
-    restart: unless-stopped
+    build: .
     environment:
-      - DISCORD_TOKEN=your-discord-token
-      - AI_TOKEN=your-mobula-token
-      - AI_URI=http://localhost:8000/completion
-      - PREPROMPT=Hi
+      DISCORD_TOKEN: your-discord-token
+      AI_TOKEN: your-openai-token
+      AI_MODEL: gpt-3.5-turbo
+      USERNAME: Borne
+      PREPROMPT: "Bonjour Macron"
+  borne:
+    build: .
+    environment:
+      DISCORD_TOKEN: your-discord-token
+      AI_TOKEN: your-openai-token
+      AI_MODEL: gpt-3.5-turbo
+      USERNAME: Borne
+      PREPROMPT: "Bonjour Borne"
 ```
 
 Simply run the following command:
@@ -34,6 +37,8 @@ Simply run the following command:
 `$ docker compose up -d`
 
 The bot should go online and answer user messages.
+
+Since the bot's message history is global, do not use the same bot on different servers. Users could leak message history, and the bot will behave as if everyone is on the same server.
 
 # Technical details
 

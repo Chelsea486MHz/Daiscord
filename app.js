@@ -1,47 +1,50 @@
 require('dotenv').config();
-const axios = require('axios');
 const Discord = require('discord.js');
+const { Configuration, OpenAIApi } = require("openai");
 
-console.log('Starting dAIscord with the following settings:')
-console.log(`Discord token: ${process.env.DISCORD_TOKEN}`);
-console.log(`AI token: ${process.env.AI_TOKEN}`);
-console.log(`AI URI: ${process.env.AI_URI}`);
-console.log(`PREPROMPT: ${process.env.PREPROMPT}`);
+// OpenAI client configuration
+const configuration = new Configuration({ apiKey: process.env.AI_TOKEN });
+const openai = new OpenAIApi(configuration);
 
 // Discord client configuration
-const client = new Discord.Client({ intents: 67584 });
+const client = new Discord.Client({ intents: 131071 });
 
 // Message history
-let messageHistory = '';
+let messageHistory = [];
 
 // Respond to prompts
 async function getAiCompletion(prompt) {
-	messageHistory += `${prompt}\n`;
-	console.log('Requesting AI completion for the following prompt:');
-	console.log(prompt);
+	messageHistory.push({role: "user", content: `${prompt}`});
 
-	// Send the prompt, wait for completion
-    try {
-        const response = await axios.post(process.env.AI_URI, {
-			text: prompt
-		}, {
-			headers: {
-				'Authorization': process.env.AI_TOKEN,
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-		responseType: 'blob'
+	try {
+		const response = await openai.createChatCompletion({
+			model: `${process.env.AI_MODEL}`,
+			messages: messageHistory,
 		});
+  
+		// Extract the generated text from the response
+		console.log(`Completion succeeded. Response: ${response.data.choices[0].message.content}`);
+		messageHistory.push({role: "assistant", content: `${response.data.choices[0].message.content}`});
 
-		// Return the completion
-		console.log('Received completion:');
-		console.log(response.data)
-		return response.data;
+		return response.data.choices[0].message.content;
+	}
 
-    } catch (error) {
-        console.error('Error occurred while requesting completion:', error);
-        throw error;
-    }
+	catch (error) {
+		console.log('Error occurred:');
+		console.error(error);
+  
+		// Handle specific error scenarios
+		if (error.response) {
+			console.log(`API response status: ${error.response.status}`);
+			console.log(`API response data: ${error.response.data}`);
+		}
+
+		return null;
+	}
 }
+
+// Pre-prompt
+getAiCompletion(process.env.PREPROMPT);
 
 // Set up Discord bot events
 client.on('ready', () => {
@@ -53,9 +56,7 @@ client.on('interactionCreate', interaction => {
 });
 
 client.on("messageCreate", async message => {
-	console.log('Received message. Message:');
-	console.log(message);
-	const voiceChannel = message.member?.voice.channel;
+	console.log(`Received message. Message: ${message}`);
 
 	// Ignore messages from the bot itself
 	if (message.author.id === client.user.id) {
@@ -65,7 +66,7 @@ client.on("messageCreate", async message => {
 
 	// Handle ping
 	else if (message.content.startsWith("ping")) {
-		console.log('Message is a ping request. Ignoring');
+		console.log('Message is a ping request.');
 		message.channel.send("pong");
 	}
 
@@ -75,15 +76,10 @@ client.on("messageCreate", async message => {
 
 		const prompt = `${message.author.username}: ${message.content}`;
 		const response = await getAiCompletion(prompt);
-		console.log('Got ChatGPT reply. Sending the following message:');
-		console.log(response);
+		console.log(`Got ChatGPT reply. Sending the following message: ${response}`);
 
 		message.channel.send(response);
 	}
 });
-
-// Pre-prompt
-var preprompt = process.env.PREPROMPT;
-getAiCompletion(preprompt);
 
 client.login(process.env.DISCORD_TOKEN);
