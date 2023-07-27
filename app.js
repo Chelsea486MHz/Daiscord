@@ -70,6 +70,13 @@ client.on("messageCreate", async message => {
 		message.channel.send("pong");
 	}
 
+	// Handle conversation resets
+	else if (message.content.startsWith("!reset")) {
+		console.log('Resetting message history.');
+		messageHistory = [];
+		getAiCompletion(process.env.PREPROMPT);
+	}
+
 	// Otherwise, send to AI
 	else {
 		console.log('Replying using AI');

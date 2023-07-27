@@ -20,7 +20,6 @@ services:
       DISCORD_TOKEN: your-discord-token
       AI_TOKEN: your-openai-token
       AI_MODEL: gpt-3.5-turbo
-      USERNAME: Borne
       PREPROMPT: "Bonjour Macron"
   borne:
     build: .
@@ -28,7 +27,6 @@ services:
       DISCORD_TOKEN: your-discord-token
       AI_TOKEN: your-openai-token
       AI_MODEL: gpt-3.5-turbo
-      USERNAME: Borne
       PREPROMPT: "Bonjour Borne"
 ```
 
@@ -39,6 +37,10 @@ Simply run the following command:
 The bot should go online and answer user messages.
 
 Since the bot's message history is global, do not use the same bot on different servers. Users could leak message history, and the bot will behave as if everyone is on the same server.
+
+# Reset conversations
+
+From the Discord chat, use the `!reset` command to reset the chat history. Give the bot some time to run the pre-prompt again.
 
 # Technical details
 
