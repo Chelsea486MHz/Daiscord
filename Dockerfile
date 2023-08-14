@@ -13,7 +13,7 @@ COPY package*.json ./
 RUN npm install
 
 # Install application
-COPY --chown=node:node . .
+COPY --chown=node:node ./src/app.js app.js
 
 # Run it
 USER node
