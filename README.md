@@ -1,6 +1,6 @@
 ![dAIscord logo](logo.png)
 
-# Interact with your Discord users with custom AI endpoints
+# Interact with ChatGPT from Discord
 
 dAIscord allows you to add custom AI bots to your server. An OpenAI API key is required.
 
