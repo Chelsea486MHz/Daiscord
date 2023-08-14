@@ -9,8 +9,9 @@ const openai = new OpenAIApi(configuration);
 // Discord client configuration
 const client = new Discord.Client({ intents: 131071 });
 
-// Message history
+// Message history and pre-prompt
 let messageHistory = [];
+messageHistory.push({role: "system", content: `${process.env.PREPROMPT}`});
 
 // Respond to prompts
 async function getAiCompletion(prompt) {
@@ -42,9 +43,6 @@ async function getAiCompletion(prompt) {
 		return null;
 	}
 }
-
-// Pre-prompt
-getAiCompletion(process.env.PREPROMPT);
 
 // Set up Discord bot events
 client.on('ready', () => {
